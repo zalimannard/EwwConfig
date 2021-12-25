@@ -1,3 +1,5 @@
+(defvar bar-element-height 15)
+
 (defpoll time :interval "10s"
   "date '+%H:%M'")
 
@@ -17,8 +19,8 @@
        :space-evenly false
     (label :text "   ")
     (image :path "icons/clock.png"
-           :image-height 15)
-    (label :text "  ${time}  ")))
+           :image-height bar-element-height)
+    (label :text "  ${time}   ")))
 
 (defwindow bar_time
   :monitor 1
@@ -37,8 +39,8 @@
        :spacing 10
        :space-evenly false
     (label)
-    (image :path {language == "ru" ? "icons/russia.png" : "icons/united-states.png"}
-           :image-height 22)
+    (image :path {language == "ru" ? "icons/russia_flag.png" : "icons/usa_flag.png"}
+           :image-height bar-element-height)
     (label)))
 
 (defwindow bar_language
@@ -61,7 +63,7 @@
        :space-evenly false
     (label)
     (image :path {charging == "statecharging" ? "icons/batzar.png" : charging == "statefully-charged" ? "icons/batzarfull.png" : power > 80 ? "icons/bat100.png" : power > 60 ? "icons/bat80.png" : power > 40 ? "icons/bat60.png" : power > 20 ? "icons/bat40.png" : power > 10 ? "icons/bat20.png" : "icons/bat10.png"}
-           :image-height 13)
+           :image-height bar-element-height)
     (label)))
 
 (defwindow bar_power
