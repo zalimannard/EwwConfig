@@ -1,0 +1,77 @@
+(defpoll time :interval "10s"
+  "date '+%H:%M'")
+
+(defpoll language :interval "100ms"
+  "test `xset -q | grep LED | awk {' print $10 '} | cut -c5` -eq 1 && echo 'ru' || echo 'en' ")
+
+(defpoll charging :interval "30s"
+  "upower -i /org/freedesktop/UPower/devices/battery_BAT0 | grep state | sed 's/[ :%]//g'")
+
+(defpoll power :interval "30s"
+  "upower -i /org/freedesktop/UPower/devices/battery_BAT0 | grep percentage | sed 's/[a-z :%]//g'")
+
+
+
+(defwidget wbar_time []
+  (box :class "wbar_time"
+       :space-evenly false
+    (label :text "   ")
+    (image :path "icons/clock.png"
+           :image-height 15)
+    (label :text "  ${time}  ")))
+
+(defwindow bar_time
+  :monitor 1
+  :windowtype "dock"
+  :geometry (geometry :x "-12"
+                      :y "1%"
+                      :height "3%"
+                      :anchor "top right")
+  :reserve (struts :side "top" :distance "4%")
+  (wbar_time))
+
+
+
+(defwidget wbar_language []
+  (box :class "wbar_language"
+       :spacing 10
+       :space-evenly false
+    (label)
+    (image :path {language == "ru" ? "icons/russia.png" : "icons/united-states.png"}
+           :image-height 22)
+    (label)))
+
+(defwindow bar_language
+  :monitor 1
+  :windowtype "dock"
+  :geometry (geometry :x "-106"
+                      :y "1%"
+                      :height "3%"
+                      :anchor "top right")
+  :reserve (struts :side "top" :distance "4%")
+  (box
+       :space-evenly false
+    (wbar_language)))
+
+
+
+(defwidget wbar_power []
+  (box :class "wbar_language"
+       :spacing 10
+       :space-evenly false
+    (label)
+    (image :path {charging == "statecharging" ? "icons/batzar.png" : charging == "statefully-charged" ? "icons/batzarfull.png" : power > 80 ? "icons/bat100.png" : power > 60 ? "icons/bat80.png" : power > 40 ? "icons/bat60.png" : power > 20 ? "icons/bat40.png" : power > 10 ? "icons/bat20.png" : "icons/bat10.png"}
+           :image-height 13)
+    (label)))
+
+(defwindow bar_power
+  :monitor 1
+  :windowtype "dock"
+  :geometry (geometry :x "-160"
+                      :y "1%"
+                      :height "3%"
+                      :anchor "top right")
+  :reserve (struts :side "top" :distance "4%")
+  (box
+       :space-evenly false
+    (wbar_power)))
