@@ -4,7 +4,7 @@
   "date '+%H:%M'")
 
 (defpoll language :interval "100ms"
-  "test `xset -q | grep LED | awk {' print $10 '} | cut -c5` -eq 1 && echo 'ru' || echo 'en' ")
+  "xkb-switch")
 
 (defpoll charging :interval "30s"
   "upower -i /org/freedesktop/UPower/devices/battery_BAT0 | grep state | sed 's/[ :%]//g'")
@@ -39,14 +39,15 @@
        :spacing 10
        :space-evenly false
     (label)
-    (image :path {language == "ru" ? "icons/russia_flag.png" : "icons/usa_flag.png"}
-           :image-height bar-element-height)
+    (button :onclick "xkb-switch -n"
+      (image :path {language == "ru" ? "icons/russia_flag.png" : "icons/usa_flag.png"}
+             :image-height bar-element-height))
     (label)))
 
 (defwindow bar_language
   :monitor 1
   :windowtype "dock"
-  :geometry (geometry :x "-106"
+  :geometry (geometry :x "-110"
                       :y "1%"
                       :height "3%"
                       :anchor "top right")
@@ -61,19 +62,36 @@
   (box :class "wbar_language"
        :spacing 10
        :space-evenly false
-    (label)
     (image :path {charging == "statecharging" ? "icons/batzar.png" : charging == "statefully-charged" ? "icons/batzarfull.png" : power > 80 ? "icons/bat100.png" : power > 60 ? "icons/bat80.png" : power > 40 ? "icons/bat60.png" : power > 20 ? "icons/bat40.png" : power > 10 ? "icons/bat20.png" : "icons/bat10.png"}
-           :image-height bar-element-height)
-    (label)))
+           :image-height {bar-element-height})))
 
-(defwindow bar_power
+(defwidget wbar_bluetooth []
+  (box :class "wbar_bluetooth"
+       :spacing 10
+       :space-evenly false
+    (image :path "icons/bluetooth_active.png"
+           :image-height {bar-element-height + 2})))
+
+(defwidget wbar_wifi []
+  (box :class "wbar_wifi"
+       :spacing 10
+       :space-evenly false
+    (image :path "icons/wifi3.png"
+           :image-height {bar-element-height})))
+
+(defwindow bar_power_bluetooth
   :monitor 1
   :windowtype "dock"
-  :geometry (geometry :x "-160"
+  :geometry (geometry :x "-164"
                       :y "1%"
                       :height "3%"
                       :anchor "top right")
   :reserve (struts :side "top" :distance "4%")
   (box
        :space-evenly false
-    (wbar_power)))
+       :spacing 10
+    (label)
+    (wbar_wifi)
+    (wbar_bluetooth)
+    (wbar_power)
+    (label)))
