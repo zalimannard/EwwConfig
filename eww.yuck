@@ -4,13 +4,19 @@
   "date '+%H:%M'")
 
 (defpoll language :interval "100ms"
-  "xkb-switch")
+  "xkblayout-state print \"%s\"")
 
 (defpoll charging :interval "30s"
   "upower -i /org/freedesktop/UPower/devices/battery_BAT0 | grep state | sed 's/[ :%]//g'")
 
 (defpoll power :interval "30s"
   "upower -i /org/freedesktop/UPower/devices/battery_BAT0 | grep percentage | sed 's/[a-z :%]//g'")
+
+(deflisten music_author :initial ""
+  "playerctl --follow metadata --format '{{ artist }}'")
+
+(deflisten music_title :initial ""
+  "playerctl --follow metadata --format '{{ title }}'")
 
 
 
@@ -40,7 +46,7 @@
        :space-evenly false
     (label)
     (button :onclick "xkb-switch -n"
-      (image :path {language == "ru" ? "icons/russia_flag.png" : "icons/usa_flag.png"}
+      (image :path {language == "us" ? "icons/usa_flag.png" : "icons/russia_flag.png"}
              :image-height bar-element-height))
     (label)))
 
@@ -82,7 +88,7 @@
 (defwindow bar_power_bluetooth
   :monitor 1
   :windowtype "dock"
-  :geometry (geometry :x "-164"
+  :geometry (geometry :x "-162"
                       :y "1%"
                       :height "3%"
                       :anchor "top right")
@@ -95,3 +101,79 @@
     (wbar_bluetooth)
     (wbar_power)
     (label)))
+
+
+
+(defwidget wbar_music_author []
+  (box :class "wbar_music_author"
+    (label :text "${music_author}"
+           :limit-width 20)))
+
+(defwidget wbar_music_separator []
+  (box :class "wbar_music_separator"
+    (label :text "-")))
+
+(defwidget wbar_music_title []
+  (box :class "wbar_music_title"
+    (label :text "${music_title}"
+           :limit-width 40)))
+
+(defwindow bar_music
+  :monitor 1
+  :windowtype "dock"
+  :wm-ignore false
+  :stacking "bg"
+  :geometry (geometry :x "255"
+                      :y "1%"
+                      :height "3%"
+                      :anchor "top left")
+  :reserve (struts :side "top" :distance "4%")
+  (box
+       :space-evenly false
+       :spacing 10
+    (label)
+    (image :path "icons/spotify.png"
+           :image-height {bar-element-height + 2})
+    (wbar_music_author)
+    (wbar_music_separator)
+    (wbar_music_title)
+    (label)))
+
+
+
+
+
+(defwidget wbar_workspaces []
+  (box :class "workspaces"
+       :orientation "h"
+       :space-evenly true
+       :halign "start"
+       :spacing 15
+    (button :onclick "wmctrl -s 9" 1)
+    (button :onclick "wmctrl -s 10" 2)
+    (button :onclick "wmctrl -s 11" 3)
+    (button :onclick "wmctrl -s 12" 4)
+    (button :onclick "wmctrl -s 13" 5)
+    (button :onclick "wmctrl -s 14" 6)
+    (button :onclick "wmctrl -s 15" 7)
+    (button :onclick "wmctrl -s 16" 8)
+    (button :onclick "wmctrl -s 17" 9)))
+
+
+(defwindow bar_workspaces
+  :monitor 1
+  :windowtype "dock"
+  :geometry (geometry :x "12"
+                      :y "1%"
+                      :height "3%"
+                      :width "231px"
+                      :anchor "top left")
+  :reserve (struts :side "top" :distance "4%")
+  (box
+       :space-evenly false
+       :spacing 15
+    (label)
+    (wbar_workspaces)
+    (label)))
+
+
