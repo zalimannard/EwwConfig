@@ -12,11 +12,16 @@
 (defpoll power :interval "30s"
   "upower -i /org/freedesktop/UPower/devices/battery_BAT0 | grep percentage | sed 's/[a-z :%]//g'")
 
-(deflisten music_author :initial ""
+(deflisten music_author :interval "5s"
   "playerctl --follow metadata --format '{{ artist }}'")
 
-(deflisten music_title :initial ""
+(deflisten music_title :interval "5s"
   "playerctl --follow metadata --format '{{ title }}'")
+; (deflisten music_author :initial ""
+;   "playerctl --follow metadata --format '{{ artist }}'")
+;
+; (deflisten music_title :initial ""
+;   "playerctl --follow metadata --format '{{ title }}'")
 
 
 
@@ -32,10 +37,11 @@
   :monitor 1
   :windowtype "dock"
   :geometry (geometry :x "-12"
-                      :y "1%"
-                      :height "3%"
+                      :y "12"
+                      :width 88
+                      :height "32"
                       :anchor "top right")
-  :reserve (struts :side "top" :distance "4%")
+  :reserve (struts :side "top" :distance "44")
   (wbar_time))
 
 
@@ -53,11 +59,12 @@
 (defwindow bar_language
   :monitor 1
   :windowtype "dock"
-  :geometry (geometry :x "-110"
-                      :y "1%"
-                      :height "3%"
+  :geometry (geometry :x "-112"
+                      :y "12"
+                      :width 42
+                      :height "32"
                       :anchor "top right")
-  :reserve (struts :side "top" :distance "4%")
+  :reserve (struts :side "top" :distance "44")
   (box
        :space-evenly false
     (wbar_language)))
@@ -88,11 +95,11 @@
 (defwindow bar_power_bluetooth
   :monitor 1
   :windowtype "dock"
-  :geometry (geometry :x "-162"
-                      :y "1%"
-                      :height "3%"
+  :geometry (geometry :x "-166"
+                      :y "12"
+                      :height "32"
                       :anchor "top right")
-  :reserve (struts :side "top" :distance "4%")
+  :reserve (struts :side "top" :distance "44")
   (box
        :space-evenly false
        :spacing 10
@@ -106,8 +113,7 @@
 
 (defwidget wbar_music_author []
   (box :class "wbar_music_author"
-    (label :text "${music_author}"
-           :limit-width 20)))
+    (label :text "${music_author}")))
 
 (defwidget wbar_music_separator []
   (box :class "wbar_music_separator"
@@ -115,19 +121,42 @@
 
 (defwidget wbar_music_title []
   (box :class "wbar_music_title"
-    (label :text "${music_title}"
-           :limit-width 40)))
+    (label :text "${music_title}")))
 
 (defwindow bar_music
   :monitor 1
-  :windowtype "dock"
-  :wm-ignore false
+  :windowtype "normal"
+  :wm-ignore true
   :stacking "bg"
   :geometry (geometry :x "255"
-                      :y "1%"
-                      :height "3%"
+                      :y "12"
+                      :width "1"
+                      :height "32"
                       :anchor "top left")
-  :reserve (struts :side "top" :distance "4%")
+  :reserve (struts :side "top" :distance "44")
+  (box
+       :space-evenly false
+       :spacing 10
+    (label)
+    (image :path "icons/spotify.png"
+           :image-height {bar-element-height + 2})
+    (wbar_music_author)
+    (wbar_music_separator)
+    (wbar_music_title)
+    (label)))
+
+
+(defwindow bar_music2
+  :monitor 1
+  :windowtype "normal"
+  :wm-ignore true
+  :stacking "bg"
+  :geometry (geometry :x "255"
+                      :y "12"
+                      :width "1"
+                      :height "32"
+                      :anchor "top left")
+  :reserve (struts :side "top" :distance "44")
   (box
        :space-evenly false
        :spacing 10
@@ -141,7 +170,10 @@
 
 
 
-
+(defvar variable_containing_yuck
+  "
+  (wbar_music_title)
+  ")
 
 (defwidget wbar_workspaces []
   (box :class "workspaces"
@@ -164,11 +196,11 @@
   :monitor 1
   :windowtype "dock"
   :geometry (geometry :x "12"
-                      :y "1%"
-                      :height "3%"
+                      :y "12"
+                      :height "32"
                       :width "231px"
                       :anchor "top left")
-  :reserve (struts :side "top" :distance "4%")
+  :reserve (struts :side "top" :distance "44")
   (box
        :space-evenly false
        :spacing 15

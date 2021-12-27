@@ -1,0 +1,7 @@
+#!/bin/bash
+
+eww open bar_music
+eww close bar_music2
+eww open bar_music2
+eww close bar_music
+killall playerctl
