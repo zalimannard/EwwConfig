@@ -1,4 +1,4 @@
-(defvar bar-element-height 15)
+(defvar bar-element-height 17)
 
 (defpoll time :interval "10s"
   "date '+%H:%M'")
@@ -12,17 +12,33 @@
 (defpoll power :interval "30s"
   "upower -i /org/freedesktop/UPower/devices/battery_BAT0 | grep percentage | sed 's/[a-z :%]//g'")
 
-(deflisten music_author :interval "5s"
-  "playerctl --follow metadata --format '{{ artist }}'")
+(defpoll music_author :interval "1s"
+  "playerctl --player=spotify,vlc,%any,chromium metadata artist")
 
-(deflisten music_title :interval "5s"
-  "playerctl --follow metadata --format '{{ title }}'")
-; (deflisten music_author :initial ""
-;   "playerctl --follow metadata --format '{{ artist }}'")
-;
-; (deflisten music_title :initial ""
-;   "playerctl --follow metadata --format '{{ title }}'")
+(defpoll music_title :interval "1s"
+  "playerctl --player=spotify,vlc,%any,chromium metadata title")
 
+(defpoll current_workspace :interval "300ms"
+  "wmctrl -d | grep '*' | cut -d ' ' -f1")
+
+(defpoll workspace9_windowsnumber :interval "1s"
+  "cat ~/.config/eww/scripts/workspaces_window | awk '{print \"s\"$2\"f\"}' | grep s9f | wc -l")
+(defpoll workspace10_windowsnumber :interval "1s"
+  "cat ~/.config/eww/scripts/workspaces_window | awk '{print \"s\"$2\"f\"}' | grep s10f | wc -l")
+(defpoll workspace11_windowsnumber :interval "1s"
+  "cat ~/.config/eww/scripts/workspaces_window | awk '{print \"s\"$2\"f\"}' | grep s11f | wc -l")
+(defpoll workspace12_windowsnumber :interval "1s"
+  "cat ~/.config/eww/scripts/workspaces_window | awk '{print \"s\"$2\"f\"}' | grep s12f | wc -l")
+(defpoll workspace13_windowsnumber :interval "1s"
+  "cat ~/.config/eww/scripts/workspaces_window | awk '{print \"s\"$2\"f\"}' | grep s13f | wc -l")
+(defpoll workspace14_windowsnumber :interval "1s"
+  "cat ~/.config/eww/scripts/workspaces_window | awk '{print \"s\"$2\"f\"}' | grep s14f | wc -l")
+(defpoll workspace15_windowsnumber :interval "1s"
+  "cat ~/.config/eww/scripts/workspaces_window | awk '{print \"s\"$2\"f\"}' | grep s15f | wc -l")
+(defpoll workspace16_windowsnumber :interval "1s"
+  "cat ~/.config/eww/scripts/workspaces_window | awk '{print \"s\"$2\"f\"}' | grep s16f | wc -l")
+(defpoll workspace17_windowsnumber :interval "1s"
+  "cat ~/.config/eww/scripts/workspaces_window | awk '{print \"s\"$2\"f\"}' | grep s17f | wc -l")
 
 
 (defwidget wbar_time []
@@ -83,7 +99,7 @@
        :spacing 10
        :space-evenly false
     (image :path "icons/bluetooth_active.png"
-           :image-height {bar-element-height + 2})))
+           :image-height {bar-element-height})))
 
 (defwidget wbar_wifi []
   (box :class "wbar_wifi"
@@ -128,7 +144,7 @@
   :windowtype "normal"
   :wm-ignore true
   :stacking "bg"
-  :geometry (geometry :x "255"
+  :geometry (geometry :x "287"
                       :y "12"
                       :width "1"
                       :height "32"
@@ -139,7 +155,7 @@
        :spacing 10
     (label)
     (image :path "icons/spotify.png"
-           :image-height {bar-element-height + 2})
+           :image-height {bar-element-height})
     (wbar_music_author)
     (wbar_music_separator)
     (wbar_music_title)
@@ -151,7 +167,7 @@
   :windowtype "normal"
   :wm-ignore true
   :stacking "bg"
-  :geometry (geometry :x "255"
+  :geometry (geometry :x "287"
                       :y "12"
                       :width "1"
                       :height "32"
@@ -162,34 +178,65 @@
        :spacing 10
     (label)
     (image :path "icons/spotify.png"
-           :image-height {bar-element-height + 2})
+           :image-height {bar-element-height})
     (wbar_music_author)
     (wbar_music_separator)
     (wbar_music_title)
     (label)))
 
 
-
-(defvar variable_containing_yuck
-  "
-  (wbar_music_title)
-  ")
-
 (defwidget wbar_workspaces []
   (box :class "workspaces"
        :orientation "h"
        :space-evenly true
        :halign "start"
-       :spacing 15
-    (button :onclick "wmctrl -s 9" 1)
-    (button :onclick "wmctrl -s 10" 2)
-    (button :onclick "wmctrl -s 11" 3)
-    (button :onclick "wmctrl -s 12" 4)
-    (button :onclick "wmctrl -s 13" 5)
-    (button :onclick "wmctrl -s 14" 6)
-    (button :onclick "wmctrl -s 15" 7)
-    (button :onclick "wmctrl -s 16" 8)
-    (button :onclick "wmctrl -s 17" 9)))
+       :spacing 10
+    (button :onclick "wmctrl -s 9"
+      (image :path {current_workspace == 9 ? "icons/Workspaces/browser_active.png" :
+        workspace9_windowsnumber > 0 ?  "icons/Workspaces/browser_half.png" : "icons/Workspaces/browser_disable.png"}
+             :image-height {current_workspace == 9 ? bar-element-height - 2 : bar-element-height}))
+
+    (button :onclick "wmctrl -s 10"
+      (image :path {current_workspace == 10 ? "icons/Workspaces/code_active.png" :
+        workspace10_windowsnumber > 0 ?  "icons/Workspaces/code_half.png" : "icons/Workspaces/code_disable.png"}
+             :image-height {current_workspace == 10 ? bar-element-height - 2 : bar-element-height}))
+
+    (button :onclick "wmctrl -s 11"
+      (image :path {current_workspace == 11 ? "icons/Workspaces/music_active.png" :
+        workspace11_windowsnumber > 0 ?  "icons/Workspaces/music_half.png" : "icons/Workspaces/music_disable.png"}
+             :image-height {current_workspace == 11 ? bar-element-height - 2 : bar-element-height}))
+
+    (button :onclick "wmctrl -s 12"
+      (image :path {current_workspace == 12 ? "icons/Workspaces/folder_active.png" :
+        workspace12_windowsnumber > 0 ?  "icons/Workspaces/folder_half.png" : "icons/Workspaces/folder_disable.png"}
+             :image-height {current_workspace == 12 ? bar-element-height - 2 : bar-element-height}))
+
+    (button :onclick "wmctrl -s 13"
+      (image :path {current_workspace == 13 ? "icons/Workspaces/paint_active.png" :
+        workspace13_windowsnumber > 0 ?  "icons/Workspaces/paint_half.png" : "icons/Workspaces/paint_disable.png"}
+             :image-height {current_workspace == 13 ? bar-element-height - 2 : bar-element-height}))
+
+    (button :onclick "wmctrl -s 14"
+      (image :path {current_workspace == 14 ? "icons/Workspaces/terminal_active.png" :
+        workspace14_windowsnumber > 0 ?  "icons/Workspaces/terminal_half.png" : "icons/Workspaces/terminal_disable.png"}
+             :image-height {current_workspace == 14 ? bar-element-height - 2 : bar-element-height}))
+
+    (button :onclick "wmctrl -s 15"
+      (image :path {current_workspace == 15 ? "icons/Workspaces/7_active.png" :
+        workspace15_windowsnumber > 0 ?  "icons/Workspaces/7_half.png" : "icons/Workspaces/7_disable.png"}
+             :image-height {current_workspace == 15 ? bar-element-height - 2 : bar-element-height}))
+
+    (button :onclick "wmctrl -s 16"
+      (image :path {current_workspace == 16 ? "icons/Workspaces/8_active.png" :
+        workspace16_windowsnumber > 0 ?  "icons/Workspaces/8_half.png" : "icons/Workspaces/8_disable.png"}
+             :image-height {current_workspace == 16 ? bar-element-height - 2 : bar-element-height}))
+
+    (button :onclick "wmctrl -s 17"
+      (image :path {current_workspace == 17 ? "icons/Workspaces/9_active.png" :
+        workspace17_windowsnumber > 0 ?  "icons/Workspaces/9_half.png" : "icons/Workspaces/9_disable.png"}
+             :image-height {current_workspace == 17 ? bar-element-height - 2 : bar-element-height}))))
+
+
 
 
 (defwindow bar_workspaces
@@ -198,7 +245,7 @@
   :geometry (geometry :x "12"
                       :y "12"
                       :height "32"
-                      :width "231px"
+                      :width "253px"
                       :anchor "top left")
   :reserve (struts :side "top" :distance "44")
   (box

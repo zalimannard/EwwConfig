@@ -1,15 +1,13 @@
 #!/bin/bash
-
 current_title=`eww get music_title`
 current_author=`eww get music_author`
 prev_title=`cat prev_title`
 prev_author=`cat prev_author`
-if [[ ${current_title} != ${prev_title} || %{current_author} != {prev_author} ]]; then
+if [[ ${current_title} != ${prev_title} || ${current_author} != ${prev_author} ]]; then
     eww open bar_music
     eww close bar_music2
     eww open bar_music2
     eww close bar_music
 fi
-echo ${prev_title} > prev_title
-echo ${prev_author} > prev_author
-killall playerctl
+echo ${current_title} > prev_title
+echo ${current_author} > prev_author

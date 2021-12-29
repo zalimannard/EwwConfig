@@ -1,0 +1,7 @@
+#!/bin/bash
+while :
+do
+    sh ~/.config/eww/scripts/update_music
+    sh ~/.config/eww/scripts/update_workspaces
+    sleep 1
+done

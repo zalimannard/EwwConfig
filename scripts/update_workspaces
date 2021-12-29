@@ -1,0 +1,2 @@
+#!/bin/bash
+wmctrl -l > ~/.config/eww/scripts/workspaces_window
